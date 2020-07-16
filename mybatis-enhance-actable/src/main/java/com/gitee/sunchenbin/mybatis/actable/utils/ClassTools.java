@@ -1,5 +1,16 @@
 package com.gitee.sunchenbin.mybatis.actable.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.io.Resources;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.type.ClassMetadata;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReaderFactory;
+import org.springframework.util.ClassUtils;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -7,13 +18,11 @@ import java.lang.reflect.Field;
 import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import static org.springframework.util.StringUtils.tokenizeToStringArray;
 
 
 /**
@@ -22,7 +31,40 @@ import java.util.jar.JarFile;
  * @author sunchenbin
  * @version 2016年6月23日 下午5:55:18 
  */
+@Slf4j
 public class ClassTools{
+
+	private static final ResourcePatternResolver RESOURCE_PATTERN_RESOLVER = new PathMatchingResourcePatternResolver();
+	private static final MetadataReaderFactory METADATA_READER_FACTORY = new CachingMetadataReaderFactory();
+
+	/**
+	 * 从包package中获取所有的Class
+	 *
+	 * @param packagePatterns
+	 * @return
+	 * @throws IOException
+	 * author pierswu
+	 */
+	public static Set<Class<?>> scanClasses(String packagePatterns) throws IOException {
+		//从mybatis-plus复制过来的
+		Set<Class<?>> classes = new HashSet<>();
+		String[] packagePatternArray = tokenizeToStringArray(packagePatterns,
+				ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS);
+		for (String packagePattern : packagePatternArray) {
+			Resource[] resources = RESOURCE_PATTERN_RESOLVER.getResources(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
+					+ ClassUtils.convertClassNameToResourcePath(packagePattern) + "/**/*.class");
+			for (Resource resource : resources) {
+				try {
+					ClassMetadata classMetadata = METADATA_READER_FACTORY.getMetadataReader(resource).getClassMetadata();
+					Class<?> clazz = Resources.classForName(classMetadata.getClassName());
+					classes.add(clazz);
+				} catch (Throwable e) {
+					log.warn("Cannot load the '" + resource + "'. Cause by " + e.toString(), e);
+				}
+			}
+		}
+		return classes;
+	}
 
 	/**
 	 * 从包package中获取所有的Class

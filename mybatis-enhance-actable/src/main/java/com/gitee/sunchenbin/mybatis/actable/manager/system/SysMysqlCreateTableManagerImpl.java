@@ -1,35 +1,27 @@
 package com.gitee.sunchenbin.mybatis.actable.manager.system;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import com.gitee.sunchenbin.mybatis.actable.annotation.*;
+import com.gitee.sunchenbin.mybatis.actable.command.CreateTableParam;
 import com.gitee.sunchenbin.mybatis.actable.command.JavaToMysqlType;
 import com.gitee.sunchenbin.mybatis.actable.command.MySqlTypeAndLength;
-import com.gitee.sunchenbin.mybatis.actable.utils.ColumnUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import com.gitee.sunchenbin.mybatis.actable.command.CreateTableParam;
 import com.gitee.sunchenbin.mybatis.actable.command.SysMysqlColumns;
 import com.gitee.sunchenbin.mybatis.actable.constants.Constants;
 import com.gitee.sunchenbin.mybatis.actable.constants.MySqlTypeConstant;
 import com.gitee.sunchenbin.mybatis.actable.dao.system.CreateMysqlTablesMapper;
 import com.gitee.sunchenbin.mybatis.actable.manager.util.ConfigurationUtil;
 import com.gitee.sunchenbin.mybatis.actable.utils.ClassTools;
+import com.gitee.sunchenbin.mybatis.actable.utils.ColumnUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * 项目启动时自动扫描配置的目录中的model，根据配置的规则自动创建或更新表 该逻辑只适用于mysql，其他数据库尚且需要另外扩展，因为sql的语法不同
@@ -83,7 +75,12 @@ public class SysMysqlCreateTableManagerImpl implements SysMysqlCreateTableManage
 		}
 
 		// 从包package中获取所有的Class
-		Set<Class<?>> classes = ClassTools.getClasses(pack);
+		Set<Class<?>> classes = null;
+		try {
+			classes = ClassTools.scanClasses(pack);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
 		// 初始化用于存储各种操作表结构的容器
 		Map<String, Map<String, List<Object>>> baseTableMap = initTableMap();
