@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.github.pierswu.mybatis.actable</groupId>
+    <artifactId>mybatis-enhance-actable-root</artifactId>
+    <version>1.2.1.RELEASE</version>
+    <modules>
+        <module>mybatis-enhance-actable</module>
+        <module>mybatis-enhance-actable-starter</module>
+    </modules>
+    <packaging>pom</packaging>
+
+
+    <name>mybatis-enhance-actable-root</name>
+    <description>Practice the learned code</description>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+    </build>
+
+    <distributionManagement>
+		<repository>
+			<id>ebig-nexus-releases</id>
+			<name>Ebig Nexus Release Repository</name>
+			<url>http://ebig-nexus:8081/nexus/content/repositories/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>ebig-nexus-snapshots</id>
+			<name>Ebig Nexus Snapshot Repository</name>
+			<url>http://ebig-nexus:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement> 
+
+
+</project>
