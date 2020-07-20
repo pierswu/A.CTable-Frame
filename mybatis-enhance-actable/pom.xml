@@ -9,7 +9,7 @@
 		<version>1.2.1.RELEASE</version>
 	</parent>
 
-	<name>com.gitee.sunchenbin.mybatis.actable:mybatis-enhance-actable</name>
+	<name>mybatis-enhance-actable</name>
     <description>A.CTable is a Maven project based on Spring and Mybatis, which enhances the function of Mybatis</description>
     <url>https://gitee.com/sunchenbin/mybatis-enhance</url>
     
